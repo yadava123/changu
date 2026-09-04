@@ -36,7 +36,7 @@ services:
     name: changu-frontend
     runtime: static
     buildCommand: npm ci && npm run build
-    staticPublishPath: ./frontend/dist
+    staticPublishPath: ./dist
     rootDir: frontend
     envVars:
       - key: VITE_API_URL

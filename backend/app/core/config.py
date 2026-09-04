@@ -29,7 +29,11 @@ class Settings(BaseSettings):
     login_rate_limit: int = 10
     register_rate_limit: int = 5
     log_level: str = "INFO"
-    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:5174"]
+    cors_origins: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://changu-frontend.onrender.com",
+    ]
     db_pool_size: int = 5
     db_max_overflow: int = 5
     db_pool_timeout: int = 30

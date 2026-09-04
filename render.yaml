@@ -35,7 +35,6 @@ services:
   - type: web
     name: changu-frontend
     runtime: static
-    plan: free
     buildCommand: npm ci && npm run build
     staticPublishPath: ./frontend/dist
     rootDir: frontend

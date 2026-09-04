@@ -10,9 +10,13 @@ def seed_admin() -> None:
     if not settings.admin_email or not settings.admin_password:
         raise RuntimeError("ADMIN_EMAIL and ADMIN_PASSWORD must be configured")
     with SessionLocal() as db:
-        existing = db.scalar(select(User).where(User.email == settings.admin_email.lower()))
+        existing = db.scalar(select(User).where(User.role == UserRole.ADMIN).order_by(User.id))
         if existing:
-            print("Admin account already exists; no changes made.")
+            existing.email = settings.admin_email.lower()
+            existing.password_hash = hash_password(settings.admin_password)
+            existing.is_active = True
+            db.commit()
+            print("Admin account synchronized.")
             return
         admin = User(
             full_name="ChanGu Admin",

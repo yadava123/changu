@@ -6,4 +6,4 @@ COPY . .
 ENV PYTHONUNBUFFERED=1
 RUN addgroup --system app && adduser --system --ingroup app app && chown -R app:app /app
 USER app
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

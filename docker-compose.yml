@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: changu
+      POSTGRES_USER: changu
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD before starting Compose}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U changu -d changu"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  backend:
+    build: ./backend
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      DEBUG: "false"
+      DATABASE_URL: postgresql+psycopg://changu:${POSTGRES_PASSWORD}@postgres:5432/changu
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY before starting Compose}
+      CORS_ORIGINS: ${CORS_ORIGINS:?Set CORS_ORIGINS to a JSON array before starting Compose}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres_data:

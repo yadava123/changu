@@ -1,0 +1,16 @@
+from datetime import datetime
+from enum import Enum
+from sqlalchemy import DateTime, Enum as SqlEnum, ForeignKey, Integer, String, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.db.base import Base
+
+class EmergencyType(str, Enum):
+    VEHICLE_BREAKDOWN="VEHICLE_BREAKDOWN"; FUEL_EMERGENCY="FUEL_EMERGENCY"; TOWING="TOWING"; MECHANIC="MECHANIC"; AMBULANCE_ASSISTANCE="AMBULANCE_ASSISTANCE"; DOCTOR_ASSISTANCE="DOCTOR_ASSISTANCE"; EMERGENCY_MEDICINE="EMERGENCY_MEDICINE"; BLOOD_DONOR="BLOOD_DONOR"; OTHER="OTHER"
+class EmergencyStatus(str, Enum):
+    CREATED="CREATED"; SEARCHING="SEARCHING"; PROVIDER_ASSIGNED="PROVIDER_ASSIGNED"; ACCEPTED="ACCEPTED"; ON_THE_WAY="ON_THE_WAY"; ARRIVED="ARRIVED"; IN_SERVICE="IN_SERVICE"; RESOLVED="RESOLVED"; CANCELLED="CANCELLED"; NO_PROVIDER_AVAILABLE="NO_PROVIDER_AVAILABLE"
+class EmergencyPriority(str, Enum): LOW="LOW"; MEDIUM="MEDIUM"; HIGH="HIGH"; CRITICAL="CRITICAL"
+
+class EmergencyRequest(Base):
+    __tablename__="emergency_requests"
+    id: Mapped[int]=mapped_column(Integer,primary_key=True); request_number: Mapped[str]=mapped_column(String(20),unique=True,index=True,nullable=False); user_id: Mapped[int]=mapped_column(ForeignKey("users.id"),nullable=False,index=True); emergency_type: Mapped[EmergencyType]=mapped_column(SqlEnum(EmergencyType,name="emergency_type",native_enum=False),nullable=False); description: Mapped[str]=mapped_column(Text,nullable=False); phone: Mapped[str]=mapped_column(String(15),nullable=False); address: Mapped[str]=mapped_column(String(255),nullable=False); area: Mapped[str]=mapped_column(String(120),nullable=False); city: Mapped[str]=mapped_column(String(80),nullable=False); state: Mapped[str]=mapped_column(String(80),nullable=False); pincode: Mapped[str]=mapped_column(String(6),nullable=False); latitude: Mapped[float|None]=mapped_column(); longitude: Mapped[float|None]=mapped_column(); status: Mapped[EmergencyStatus]=mapped_column(SqlEnum(EmergencyStatus,name="emergency_status",native_enum=False),default=EmergencyStatus.CREATED,nullable=False); priority: Mapped[EmergencyPriority]=mapped_column(SqlEnum(EmergencyPriority,name="emergency_priority",native_enum=False),nullable=False); provider_id: Mapped[int|None]=mapped_column(ForeignKey("emergency_providers.id")); accepted_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True)); assigned_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True)); on_the_way_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True)); arrived_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True)); resolved_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True)); cancelled_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True)); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),server_default=func.now(),nullable=False); updated_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),server_default=func.now(),onupdate=func.now(),nullable=False)
+    provider=relationship("EmergencyProvider"); user=relationship("User")

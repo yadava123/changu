@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom'
+export default function DriverSettings(){return <div className="simple-page"><span className="section-kicker">Delivery partner</span><h1>Settings</h1><p>Use the Dashboard to control your online availability.</p><Link className="back-link" to="/driver/dashboard">Open Driver Dashboard</Link><p>Notifications and location settings will be implemented in a future phase.</p></div>}

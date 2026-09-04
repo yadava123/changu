@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom'
+export default function VendorSettings(){return <div className="simple-page"><span className="section-kicker">Partner account</span><h1>Settings</h1><p>Manage whether your store is open and visible from the Store page.</p><Link className="back-link" to="/vendor/store">Open Store Settings</Link><p>Notifications and delivery partner settings will be implemented in a future phase.</p></div>}

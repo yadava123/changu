@@ -1,0 +1,2 @@
+const steps=['CREATED','SEARCHING','PROVIDER_ASSIGNED','ACCEPTED','ON_THE_WAY','ARRIVED','RESOLVED']
+export default function SirenTimeline({status}){if(status==='CANCELLED')return <div className="order-timeline cancelled"><span className="timeline-dot"/>Cancelled</div>;const current=steps.indexOf(status);return <div className="order-timeline">{steps.map((step,index)=><div className={`timeline-step ${index<=current?'complete':''}`} key={step}><span className="timeline-dot"/><small>{step.replaceAll('_',' ')}</small></div>)}</div>}

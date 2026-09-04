@@ -1,0 +1,7 @@
+import { useEffect,useState } from 'react'
+import { ArrowLeft } from 'lucide-react'
+import { Link,useParams } from 'react-router-dom'
+import api from '../../services/api'
+import LoadingSpinner from '../../components/LoadingSpinner'
+const actions={ACCEPTED:['pickup','Confirm Pickup'],PICKED_UP:['out-for-delivery','Mark Out for Delivery'],OUT_FOR_DELIVERY:['complete','Complete Delivery']}
+export default function DeliveryDetails(){const {id}=useParams();const [delivery,setDelivery]=useState(null);const load=()=>api.get(`/api/driver/deliveries`).then(({data})=>setDelivery(data.find(item=>String(item.id)===id)));useEffect(load,[id]);async function act(action){await api.post(`/api/driver/deliveries/${id}/${action}`);load()}if(!delivery)return <LoadingSpinner label="Loading delivery..."/>;const action=actions[delivery.status];return <div className="simple-page"><Link to="/driver/deliveries" className="back-link"><ArrowLeft size={15}/> Deliveries</Link><span className="section-kicker">Delivery tracking</span><h1>Delivery #{delivery.id}</h1><p>Order #{delivery.order_id}</p><div className="order-detail-card"><p><strong>Pickup</strong><br/>{delivery.pickup_address}</p><p><strong>Drop</strong><br/>{delivery.delivery_address}</p><div className="application-status approved">{delivery.status}</div>{action&&<button className="auth-submit" onClick={()=>act(action[0])}>{action[1]}</button>}</div></div>}
